@@ -15,6 +15,7 @@ dotenv.config();
 
 const allowedOrigins = [
     "http://localhost:5173",
+    "https://force-gym-pi.vercel.app",
     process.env.CLIENT_URL,
 ].filter(Boolean);
 
