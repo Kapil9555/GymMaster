@@ -14,6 +14,7 @@ const Login = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const location = useLocation();
   const { auth, setAuth } = useAuth();
 
@@ -64,15 +65,25 @@ const Login = () => {
             data-aos="zoom-in" // Add AOS animation
           />
 
-          <Input 
-            type="password"
-            placeholder="Password"
-            name="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$" 
-            data-aos="zoom-in" // Add AOS animation
-          />
+
+          <div className="relative w-full max-w-[750px]" data-aos="zoom-in">
+            <Input
+              type={showPassword ? "text" : "password"}
+              placeholder="Password"
+              name="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              // pattern removed for no validation
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword((prev) => !prev)}
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-600 focus:outline-none"
+              tabIndex={-1}
+            >
+              {showPassword ? "Hide" : "Show"}
+            </button>
+          </div>
 
           <Link 
             to="/forgot-password" 

@@ -18,6 +18,11 @@ const addMemberController = async (req, res) => {
 
     const hashedPassword = await hashPassword(password);
 
+    let profilePic = "";
+    if (req.file) {
+      profilePic = `/uploads/${req.file.filename}`;
+    }
+
     const member = await new User({
       name,
       email,
@@ -37,6 +42,7 @@ const addMemberController = async (req, res) => {
       height: height || null,
       role: 0,
       status: "active",
+      profilePic,
     }).save();
 
     res.status(201).json({

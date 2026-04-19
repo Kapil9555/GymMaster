@@ -39,11 +39,11 @@ const fileFilter = (req, file, cb) => {
 const upload = multer({
   storage,
   fileFilter,
-  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB
 });
 
 // All routes require admin auth
-router.post("/add-member", requireSignIn, isAdmin, addMemberController);
+router.post("/add-member", requireSignIn, isAdmin, upload.single("profilePic"), addMemberController);
 router.put("/update-member/:id", requireSignIn, isAdmin, updateMemberController);
 router.delete("/delete-member/:id", requireSignIn, isAdmin, deleteMemberController);
 router.get("/get-member/:id", requireSignIn, isAdmin, getMemberController);

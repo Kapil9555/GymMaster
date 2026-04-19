@@ -13,7 +13,7 @@ const EditMember = () => {
   const [profilePic, setProfilePic] = useState(null);
   const [preview, setPreview] = useState(null);
   const [formData, setFormData] = useState({
-    name: '', contact: '', city: '', address: '', gender: '', age: '',
+    name: '', contact: '',
     feeAmount: '', feeDueDate: '', membershipStart: '', membershipEnd: '',
     status: '',
   });
@@ -30,10 +30,6 @@ const EditMember = () => {
         setFormData({
           name: m.name || '',
           contact: m.contact || '',
-          city: m.city || '',
-          address: m.address || '',
-          gender: m.gender || '',
-          age: m.age || '',
           feeAmount: m.feeAmount || '',
           feeDueDate: m.feeDueDate ? new Date(m.feeDueDate).toISOString().split('T')[0] : '',
           membershipStart: m.membershipStart ? new Date(m.membershipStart).toISOString().split('T')[0] : '',
@@ -68,7 +64,6 @@ const EditMember = () => {
     try {
       const res = await axios.put(`${BASE_URL}/api/v1/member/update-member/${id}`, {
         ...formData,
-        age: formData.age ? Number(formData.age) : null,
         feeAmount: formData.feeAmount ? Number(formData.feeAmount) : 0,
       });
 
@@ -130,26 +125,6 @@ const EditMember = () => {
                   className="w-full mt-1 px-4 py-2 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-blue-500 outline-none" />
               </div>
               <div>
-                <label className="text-gray-400 text-sm">Gender</label>
-                <select name="gender" value={formData.gender} onChange={handleChange}
-                  className="w-full mt-1 px-4 py-2 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-blue-500 outline-none">
-                  <option value="">Select</option>
-                  <option value="male">Male</option>
-                  <option value="female">Female</option>
-                  <option value="other">Other</option>
-                </select>
-              </div>
-              <div>
-                <label className="text-gray-400 text-sm">Age</label>
-                <input type="number" name="age" value={formData.age} onChange={handleChange}
-                  className="w-full mt-1 px-4 py-2 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-blue-500 outline-none" />
-              </div>
-              <div>
-                <label className="text-gray-400 text-sm">City</label>
-                <input type="text" name="city" value={formData.city} onChange={handleChange}
-                  className="w-full mt-1 px-4 py-2 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-blue-500 outline-none" />
-              </div>
-              <div>
                 <label className="text-gray-400 text-sm">Status</label>
                 <select name="status" value={formData.status} onChange={handleChange}
                   className="w-full mt-1 px-4 py-2 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-blue-500 outline-none">
@@ -158,11 +133,6 @@ const EditMember = () => {
                   <option value="expired">Expired</option>
                 </select>
               </div>
-            </div>
-            <div className="mt-4">
-              <label className="text-gray-400 text-sm">Address</label>
-              <textarea name="address" value={formData.address} onChange={handleChange} rows="2"
-                className="w-full mt-1 px-4 py-2 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-blue-500 outline-none" />
             </div>
           </div>
 
