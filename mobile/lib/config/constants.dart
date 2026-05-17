@@ -1,5 +1,5 @@
 class ApiConstants {
-  static const String baseUrl = 'http://localhost:8080/api/v1';
+  static const String baseUrl = 'https://gymmaster-g33n.onrender.com/api/v1';
 
   // Auth
   static const String login = '/auth/login';
