@@ -137,7 +137,10 @@ class _OverdueMembersScreenState extends State<OverdueMembersScreen> {
                                 children: [
                                   Expanded(
                                     child: OutlinedButton.icon(
-                                      onPressed: () => context.push('/fees/record/${payment.userId}'),
+                                      onPressed: () {
+                                        final uid = payment.userId;
+                                        if (uid.isNotEmpty) context.push('/fees/record/$uid');
+                                      },
                                       icon: const Icon(Icons.payment, size: 16),
                                       label: const Text('Collect', style: TextStyle(fontSize: 12)),
                                       style: OutlinedButton.styleFrom(

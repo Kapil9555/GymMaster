@@ -60,7 +60,10 @@ class _PlanListScreenState extends State<PlanListScreen> {
                   margin: const EdgeInsets.only(bottom: 12),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   child: InkWell(
-                    onTap: () => context.push('/plans/${plan.id}'),
+                    onTap: () {
+                      final id = plan.id;
+                      if (id != null && id.isNotEmpty) context.push('/plans/$id');
+                    },
                     borderRadius: BorderRadius.circular(12),
                     child: Padding(
                       padding: const EdgeInsets.all(16),
@@ -98,7 +101,10 @@ class _PlanListScreenState extends State<PlanListScreen> {
                                           TextButton(
                                             onPressed: () {
                                               Navigator.pop(ctx);
-                                              provider.deletePlan(plan.id!);
+                                              final id = plan.id;
+                                              if (id != null && id.isNotEmpty) {
+                                                provider.deletePlan(id);
+                                              }
                                             },
                                             child: const Text('Delete', style: TextStyle(color: AppColors.danger)),
                                           ),

@@ -179,7 +179,9 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                               )
                             : ElevatedButton(
                                 onPressed: () {
-                                  attendance.markAttendance(member.id!);
+                                  final id = member.id;
+                                  if (id == null || id.isEmpty) return;
+                                  attendance.markAttendance(id);
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
                                       content: Text('${member.name} marked present!'),

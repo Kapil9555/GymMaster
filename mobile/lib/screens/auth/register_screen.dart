@@ -36,7 +36,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     final auth = context.read<AuthProvider>();
     final success = await auth.register({
       'name': _nameController.text.trim(),
-      'email': _emailController.text.trim(),
+      'email': _emailController.text.trim().toLowerCase(),
       'password': _passwordController.text,
       'contact': _contactController.text.trim(),
       'city': _cityController.text.trim(),
@@ -93,23 +93,37 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 const SizedBox(height: 32),
                 TextFormField(
                   controller: _nameController,
+                  textCapitalization: TextCapitalization.words,
                   decoration: const InputDecoration(
                     labelText: 'Full Name',
                     prefixIcon: Icon(Icons.person_outlined),
                   ),
-                  validator: (v) => v == null || v.isEmpty ? 'Name is required' : null,
+                  validator: (v) {
+                    final value = v?.trim() ?? '';
+                    if (value.isEmpty) return 'Name is required';
+                    if (!RegExp(r'^[A-Za-z ]+$').hasMatch(value)) {
+                      return 'Name must contain only letters and spaces';
+                    }
+                    return null;
+                  },
                 ),
                 const SizedBox(height: 16),
                 TextFormField(
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
+                  autocorrect: false,
                   decoration: const InputDecoration(
                     labelText: 'Email',
                     prefixIcon: Icon(Icons.email_outlined),
                   ),
                   validator: (v) {
-                    if (v == null || v.isEmpty) return 'Email is required';
-                    if (!v.contains('@')) return 'Enter a valid email';
+                    final value = v?.trim() ?? '';
+                    if (value.isEmpty) return 'Email is required';
+                    if (!RegExp(r'^[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$',
+                            caseSensitive: false)
+                        .hasMatch(value)) {
+                      return 'Enter a valid email address';
+                    }
                     return null;
                   },
                 ),
@@ -119,6 +133,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   obscureText: _obscurePassword,
                   decoration: InputDecoration(
                     labelText: 'Password',
+                    helperText: 'Min 8 chars with upper, lower & a number',
                     prefixIcon: const Icon(Icons.lock_outlined),
                     suffixIcon: IconButton(
                       icon: Icon(_obscurePassword ? Icons.visibility_off : Icons.visibility),
@@ -126,8 +141,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                   ),
                   validator: (v) {
-                    if (v == null || v.isEmpty) return 'Password is required';
-                    if (v.length < 6) return 'Minimum 6 characters';
+                    final value = v ?? '';
+                    if (value.isEmpty) return 'Password is required';
+                    if (!RegExp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$')
+                        .hasMatch(value)) {
+                      return 'Min 8 chars with upper, lower & a number';
+                    }
                     return null;
                   },
                 ),
@@ -135,19 +154,37 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 TextFormField(
                   controller: _contactController,
                   keyboardType: TextInputType.phone,
+                  maxLength: 10,
                   decoration: const InputDecoration(
                     labelText: 'Contact Number',
+                    counterText: '',
                     prefixIcon: Icon(Icons.phone_outlined),
                   ),
-                  validator: (v) => v == null || v.isEmpty ? 'Contact is required' : null,
+                  validator: (v) {
+                    final value = v?.trim() ?? '';
+                    if (value.isEmpty) return 'Contact is required';
+                    if (!RegExp(r'^[6-9]\d{9}$').hasMatch(value)) {
+                      return 'Enter a 10-digit number starting with 6-9';
+                    }
+                    return null;
+                  },
                 ),
                 const SizedBox(height: 16),
                 TextFormField(
                   controller: _cityController,
+                  textCapitalization: TextCapitalization.words,
                   decoration: const InputDecoration(
-                    labelText: 'City (Optional)',
+                    labelText: 'City',
                     prefixIcon: Icon(Icons.location_city_outlined),
                   ),
+                  validator: (v) {
+                    final value = v?.trim() ?? '';
+                    if (value.isEmpty) return 'City is required';
+                    if (!RegExp(r'^[A-Za-z ]+$').hasMatch(value)) {
+                      return 'City must contain only letters and spaces';
+                    }
+                    return null;
+                  },
                 ),
                 const SizedBox(height: 32),
                 Consumer<AuthProvider>(

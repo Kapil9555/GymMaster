@@ -45,8 +45,9 @@ const registerController = async (req, res) => {
             return res.status(400).json({ success: false, message: "Phone number must start with 9, 8, 7, or 6 and contain exactly 10 digits" });
         }
 
-        // Check for existing user
-        const existingUser = await User.findOne({ email: email });
+        // Check for existing user (case-insensitive)
+        const normalizedEmail = String(email).trim().toLowerCase();
+        const existingUser = await User.findOne({ email: normalizedEmail });
 
         if (existingUser) {
             return res.status(409).json({
@@ -58,7 +59,7 @@ const registerController = async (req, res) => {
         // Create new user
         const hashedPassword = await hashPassword(password);
 
-        const user = await new User({ name: name.trim(), email: email.toLowerCase(), city: city, contact: contact, password: hashedPassword, role: 0 }).save();
+        const user = await new User({ name: name.trim(), email: normalizedEmail, city: city, contact: contact, password: hashedPassword, role: 0 }).save();
         res.status(201).json({
             success: true,
             message: "User registered successfully",
@@ -93,7 +94,10 @@ const loginController = async (req, res) => {
             });
         }
 
-        const user = await User.findOne({ email: email });
+        // Emails are stored lowercased at registration, so normalize here
+        // to keep login case-insensitive.
+        const normalizedEmail = String(email).trim().toLowerCase();
+        const user = await User.findOne({ email: normalizedEmail });
 
         if (!user) {
             return res.status(404).json({
@@ -157,8 +161,9 @@ const forgotPasswordController = async (req, res) => {
         if (!newPassword) {
             return res.json({ message: "New Password is required" });
         }
-        
-        const user = await User.findOne({email});
+
+        const normalizedEmail = String(email).trim().toLowerCase();
+        const user = await User.findOne({ email: normalizedEmail });
 
         if (!user) {
            return res.status(404).json({

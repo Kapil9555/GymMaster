@@ -168,7 +168,8 @@ class FeeProvider extends ChangeNotifier {
     try {
       final response = await _feeService.getOverdueMembers();
       if (response.data['success'] == true) {
-        _overdueMembers = List<Map<String, dynamic>>.from(response.data['data'] ?? []);
+        final list = response.data['members'] ?? response.data['data'] ?? [];
+        _overdueMembers = List<Map<String, dynamic>>.from(list);
       }
     } catch (e) {
       _error = 'Failed to load overdue members';
@@ -182,7 +183,10 @@ class FeeProvider extends ChangeNotifier {
     try {
       final response = await _feeService.getFeeSummary();
       if (response.data['success'] == true) {
-        _summary = FeeSummary.fromJson(response.data['data'] ?? response.data);
+        final summaryJson = response.data['summary'] ?? response.data['data'] ?? response.data;
+        if (summaryJson is Map) {
+          _summary = FeeSummary.fromJson(Map<String, dynamic>.from(summaryJson));
+        }
       }
     } catch (e) {
       // Summary fetch failed silently
@@ -197,7 +201,8 @@ class FeeProvider extends ChangeNotifier {
     try {
       final response = await _feeService.getPaymentReminders();
       if (response.data['success'] == true) {
-        _reminders = List<Map<String, dynamic>>.from(response.data['data'] ?? []);
+        final list = response.data['notifications'] ?? response.data['data'] ?? [];
+        _reminders = List<Map<String, dynamic>>.from(list);
       }
     } catch (e) {
       _error = 'Failed to load reminders';

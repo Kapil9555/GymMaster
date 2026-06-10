@@ -11,11 +11,16 @@ class ApiClient {
   ApiClient._internal() {
     _dio = Dio(BaseOptions(
       baseUrl: ApiConstants.baseUrl,
-      connectTimeout: const Duration(seconds: 15),
-      receiveTimeout: const Duration(seconds: 15),
+      connectTimeout: const Duration(seconds: 30),
+      receiveTimeout: const Duration(seconds: 30),
+      sendTimeout: const Duration(seconds: 30),
       headers: {
         'Content-Type': 'application/json',
+        'Accept': 'application/json',
       },
+      // Treat 4xx as non-throwing so we can read the server's JSON
+      // `{ success: false, message: "..." }` payload directly.
+      validateStatus: (status) => status != null && status < 500,
     ));
 
     _dio.interceptors.add(InterceptorsWrapper(

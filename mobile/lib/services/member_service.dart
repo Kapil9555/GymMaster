@@ -29,7 +29,7 @@ class MemberService {
   }
 
   Future<Response> searchMembers(String query) {
-    return _api.get(ApiConstants.searchMembers, queryParameters: {'query': query});
+    return _api.get(ApiConstants.searchMembers, queryParameters: {'q': query});
   }
 
   Future<Response> updateMemberStatus(String id, String status) {

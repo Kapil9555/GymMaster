@@ -31,6 +31,7 @@ class _EditMemberScreenState extends State<EditMemberScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await context.read<MemberProvider>().fetchMember(widget.memberId);
+      if (!mounted) return;
       _populateFields();
     });
   }

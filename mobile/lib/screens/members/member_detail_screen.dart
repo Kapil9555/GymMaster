@@ -78,7 +78,7 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
                       ),
                       const SizedBox(height: 12),
                       Text(member.name, style: const TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold)),
-                      Text('M ID: ${member.membershipId ?? member.id?.substring(member.id!.length - 4) ?? '-'}',
+                      Text('M ID: ${member.membershipId ?? _shortId(member.id) ?? '-'}',
                           style: TextStyle(color: Colors.white.withOpacity(0.8))),
                       const SizedBox(height: 12),
                       Container(
@@ -103,10 +103,12 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
                             if (await canLaunchUrl(uri)) await launchUrl(uri, mode: LaunchMode.externalApplication);
                           }),
                           _quickAction(Icons.payment, 'Pay Fee', () {
-                            context.push('/fees/record/${member.id}');
+                            final id = member.id;
+                            if (id != null && id.isNotEmpty) context.push('/fees/record/$id');
                           }),
                           _quickAction(Icons.history, 'History', () {
-                            context.push('/fees/history/${member.id}');
+                            final id = member.id;
+                            if (id != null && id.isNotEmpty) context.push('/fees/history/$id');
                           }),
                         ],
                       ),
@@ -194,7 +196,10 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
                         )),
                       if (feeProv.memberPayments.length > 5)
                         TextButton(
-                          onPressed: () => context.push('/fees/history/${member.id}'),
+                          onPressed: () {
+                            final id = member.id;
+                            if (id != null && id.isNotEmpty) context.push('/fees/history/$id');
+                          },
                           child: const Text('View All Payments →'),
                         ),
 
@@ -263,5 +268,10 @@ class _MemberDetailScreenState extends State<MemberDetailScreen> {
         ],
       ),
     );
+  }
+
+  static String? _shortId(String? id, [int n = 4]) {
+    if (id == null || id.isEmpty) return null;
+    return id.length <= n ? id : id.substring(id.length - n);
   }
 }

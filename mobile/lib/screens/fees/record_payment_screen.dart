@@ -52,13 +52,14 @@ class _RecordPaymentScreenState extends State<RecordPaymentScreen> {
     _updateCoverTo();
   }
 
-  void _loadMember(String id) async {
+  Future<void> _loadMember(String id) async {
     await context.read<MemberProvider>().fetchMember(id);
+    if (!mounted) return;
     final member = context.read<MemberProvider>().selectedMember;
     if (member != null) {
       setState(() {
         _selectedMember = member;
-        _amountCtrl.text = '${member.feeAmount?.toStringAsFixed(0) ?? ''}';
+        _amountCtrl.text = member.feeAmount?.toStringAsFixed(0) ?? '';
       });
     }
   }
@@ -120,8 +121,16 @@ class _RecordPaymentScreenState extends State<RecordPaymentScreen> {
       }
     }
 
+    final memberId = _selectedMember!.id;
+    if (memberId == null || memberId.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Selected member has no id'), backgroundColor: AppColors.danger),
+      );
+      return;
+    }
+
     final data = {
-      'user': _selectedMember!.id,
+      'userId': memberId,
       'amount': finalAmount,
       'dueDate': _dueDate?.toIso8601String() ?? _coverFrom.toIso8601String(),
       'isPaid': _isPaid,

@@ -16,9 +16,9 @@ class ApiConstants {
   static const String getMember = '/member/get-member';
   static const String allMembers = '/member/get-all-members';
   static const String searchMembers = '/member/search-members';
-  static const String updateMemberStatus = '/member/update-member-status';
+  static const String updateMemberStatus = '/member/update-status';
   static const String updateProfilePic = '/member/update-profile-pic';
-  static const String totalMembers = '/member/total-member';
+  static const String totalMembers = '/member/total-members';
 
   // Fees
   static const String createPayment = '/fee/create-payment';

@@ -37,6 +37,11 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     await Future.delayed(const Duration(seconds: 2));
     if (!mounted) return;
     final auth = context.read<AuthProvider>();
+    // Wait until auth has finished restoring its persisted session.
+    while (auth.isInitializing) {
+      await Future.delayed(const Duration(milliseconds: 50));
+      if (!mounted) return;
+    }
     if (auth.isAuthenticated) {
       context.go('/dashboard');
     } else {

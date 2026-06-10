@@ -29,7 +29,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
     final auth = context.read<AuthProvider>();
     final success = await auth.forgotPassword(
-      _emailController.text.trim(),
+      _emailController.text.trim().toLowerCase(),
       _newPasswordController.text,
     );
 

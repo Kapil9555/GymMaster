@@ -257,7 +257,7 @@ class _MemberCard extends StatelessWidget {
                             children: [
                               const Text('M ID', style: TextStyle(fontSize: 12, color: AppColors.textSecondary)),
                               Text(
-                                member.membershipId ?? member.id?.substring(member.id!.length - 3) ?? '-',
+                                member.membershipId ?? _shortId(member.id) ?? '-',
                                 style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                               ),
                             ],
@@ -324,7 +324,8 @@ class _MemberCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 _actionIcon(Icons.badge_outlined, 'ID Card', () {
-                  context.push('/members/${member.id}');
+                  final id = member.id;
+                  if (id != null && id.isNotEmpty) context.push('/members/$id');
                 }),
                 _actionIcon(Icons.phone, 'Call', () async {
                   final uri = Uri.parse('tel:${member.contact}');
@@ -338,11 +339,14 @@ class _MemberCard extends StatelessWidget {
                   // Mark attendance for this member
                 }),
                 _actionIcon(Icons.grid_view, 'Renew Plan', () {
-                  context.push('/fees/record/${member.id}');
+                  final id = member.id;
+                  if (id != null && id.isNotEmpty) context.push('/fees/record/$id');
                 }),
                 _actionIcon(Icons.block, 'Block', () {
+                  final id = member.id;
+                  if (id == null || id.isEmpty) return;
                   context.read<MemberProvider>().updateMemberStatus(
-                    member.id!,
+                    id,
                     member.isBlocked ? 'active' : 'blocked',
                   );
                 }),
@@ -368,6 +372,13 @@ class _MemberCard extends StatelessWidget {
   }
 
   void _showDeleteDialog(BuildContext context, User member) {
+    final id = member.id;
+    if (id == null || id.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Member id missing'), backgroundColor: AppColors.danger),
+      );
+      return;
+    }
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -378,12 +389,17 @@ class _MemberCard extends StatelessWidget {
           TextButton(
             onPressed: () {
               Navigator.pop(ctx);
-              context.read<MemberProvider>().deleteMember(member.id!);
+              context.read<MemberProvider>().deleteMember(id);
             },
             child: const Text('Delete', style: TextStyle(color: AppColors.danger)),
           ),
         ],
       ),
     );
+  }
+
+  static String? _shortId(String? id, [int n = 3]) {
+    if (id == null || id.isEmpty) return null;
+    return id.length <= n ? id : id.substring(id.length - n);
   }
 }
