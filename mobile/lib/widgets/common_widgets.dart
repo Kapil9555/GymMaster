@@ -1,6 +1,44 @@
 import 'package:flutter/material.dart';
 import 'package:gym_master/config/theme.dart';
 
+/// Shows a floating SnackBar styled for success or error feedback.
+/// Hides any current SnackBar first so messages do not stack or get clipped
+/// when the keyboard is open.
+void showAppSnackBar(
+  BuildContext context,
+  String message, {
+  bool isError = false,
+  Duration duration = const Duration(seconds: 4),
+}) {
+  final messenger = ScaffoldMessenger.of(context);
+  messenger.hideCurrentSnackBar();
+  messenger.showSnackBar(
+    SnackBar(
+      content: Row(
+        children: [
+          Icon(
+            isError ? Icons.error_outline : Icons.check_circle_outline,
+            color: Colors.white,
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(message, style: const TextStyle(color: Colors.white)),
+          ),
+        ],
+      ),
+      backgroundColor: isError ? AppColors.danger : AppColors.success,
+      behavior: SnackBarBehavior.floating,
+      margin: const EdgeInsets.all(16),
+      duration: duration,
+      action: SnackBarAction(
+        label: 'DISMISS',
+        textColor: Colors.white,
+        onPressed: () => messenger.hideCurrentSnackBar(),
+      ),
+    ),
+  );
+}
+
 class EmptyState extends StatelessWidget {
   final IconData icon;
   final String title;
